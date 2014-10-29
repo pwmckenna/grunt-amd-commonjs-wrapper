@@ -5,7 +5,8 @@ module.exports = function (grunt) {
             test: {
                 files: {
                     'fixtures/tmp/1-after.js': 'fixtures/1-before.js',
-                    'fixtures/tmp/2-after.js': 'fixtures/2-before.js'
+                    'fixtures/tmp/2-after.js': 'fixtures/2-before.js',
+                    'fixtures/tmp/3-after.js': 'fixtures/3-before.js'
                 }
             }
         },

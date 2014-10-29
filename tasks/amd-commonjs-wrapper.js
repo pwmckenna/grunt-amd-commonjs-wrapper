@@ -29,26 +29,30 @@ var injectNodesAfter = function (node, nodes) {
 var amdCommonJsWrapper = function (src) {
     return rocambole.moonwalk(src, function (node) {
         if (node.type === 'CallExpression' && node.callee.name === 'define') {
+            var isNamedModule = node.arguments[0].type !== 'ArrayExpression';
+            var dependencyArgument = node.arguments[isNamedModule ? 1 : 0];
+            var callbackArgument = node.arguments[isNamedModule ? 2 : 1];
+
             // we only know what to do if the first argument is an array of args, and the second is the callback
-            assert(node.arguments[0].type === 'ArrayExpression', 'expected an array of dependencies');
-            assert(node.arguments[1].type === 'FunctionExpression', 'expected a function callback that receives the depdencies');
+            assert(dependencyArgument.type === 'ArrayExpression', 'expected an array of dependencies');
+            assert(callbackArgument.type === 'FunctionExpression', 'expected a function callback that receives the depdencies');
 
             // get the list of deps [string]
             var dependencyNames = [];
-            for (var argNode = node.arguments[0].startToken; argNode !== node.arguments[0].endToken; argNode = argNode.next) {
+            for (var argNode = dependencyArgument.startToken; argNode !== dependencyArgument.endToken; argNode = argNode.next) {
                 if (argNode.type === 'String') {
                     dependencyNames.push(argNode.value);
                 }
-            }            
+            }
             // get the list of argument names that we'll map those dependencies to
-            var dependencyVariableNames = _.pluck(node.arguments[1].params, 'name');
+            var dependencyVariableNames = _.pluck(callbackArgument.params, 'name');
 
 
             // remove the array of dependencies as the first argument
-            node.arguments[0].startToken.prev.next = node.arguments[1].startToken;
+            dependencyArgument.startToken.prev.next = callbackArgument.startToken;
             // remove the callback arguments
-            var first = _.first(node.arguments[1].params);
-            var last = _.last(node.arguments[1].params);
+            var first = _.first(callbackArgument.params);
+            var last = _.last(callbackArgument.params);
 
             // update the callback arguments to [require, exports, module]
             var argNodes = [
@@ -63,7 +67,7 @@ var amdCommonJsWrapper = function (src) {
             injectNodes(first.startToken.prev, argNodes, last.endToken.next);
 
             // add `var name = require('dep')` for each dependency
-            var functionBlock = node.arguments[1].body;
+            var functionBlock = callbackArgument.body;
             assert(functionBlock.type === 'BlockStatement', 'expected the function body to be a block statement');
             assert(functionBlock.startToken.value === '{', 'expected a curly bracket to start the function body');
 
