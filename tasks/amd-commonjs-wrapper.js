@@ -85,6 +85,16 @@ var amdCommonJsWrapper = function (src) {
                 whitespaceNodes.push(_.pick(current.next, 'type', 'value'));
                 current = current.next;
             }
+            // if there is a 'use strict' statement at the top of the function,
+            // add any code below it
+            if (current.next.type === 'String' && current.next.value === '\'use strict\'') {
+                current = current.next;
+                // then cruise through any ;/whitespace to find the appropriate place to start
+                // sprinkling our dependency declarations
+                while (current.next.type === 'WhiteSpace' || current.next.type === 'LineBreak' || (current.next.type === 'Punctuator' && current.next.value === ';')) {
+                    current = current.next;
+                }
+            }
             assert(dependencyNames.length >= dependencyVariableNames.length, 'not enough dependencies to fill all the variables');
             for (var i = dependencyNames.length - 1; i >= 0 ; --i) {
                 injectNodes(current, _.map(whitespaceNodes, _.clone), current.next);

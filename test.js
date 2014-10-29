@@ -32,8 +32,14 @@ it('should support modules with named callback', function () {
     assert.equal(converted, expected);
 });
 
-it('should support \'use strict\'', function () {
+it('should support \'use strict\' without trailing ;', function () {
     var converted = grunt.file.read('fixtures/tmp/use-strict.js');
     var expected = grunt.file.read('fixtures/after/use-strict.js');
+    assert.equal(converted, expected);
+});
+
+it('should support \'use strict\' with trailing ;', function () {
+    var converted = grunt.file.read('fixtures/tmp/use-strict-semicolon.js');
+    var expected = grunt.file.read('fixtures/after/use-strict-semicolon.js');
     assert.equal(converted, expected);
 });
