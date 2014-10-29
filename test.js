@@ -19,3 +19,9 @@ it('should support named modules', function () {
     var expected = grunt.file.read('fixtures/after/named.js');
     assert.equal(converted, expected);
 });
+
+it('should support modules with no dependencies', function () {
+    var converted = grunt.file.read('fixtures/tmp/no-deps.js');
+    var expected = grunt.file.read('fixtures/after/no-deps.js');
+    assert.equal(converted, expected);
+});

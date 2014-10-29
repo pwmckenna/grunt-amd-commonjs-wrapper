@@ -10,16 +10,21 @@ var rocambole = require('rocambole');
 var injectNodes = function (first, middle, last) {
     middle = _.isArray(middle) ? middle : [middle];
 
-    for (var i = 0; i < middle.length - 1; ++i) {
-        middle[i].next = middle[i + 1];
+    if (middle.length) {
+        for (var i = 0; i < middle.length - 1; ++i) {
+            middle[i].next = middle[i + 1];
+        }
+        for (var i = i; i < middle.length; ++i) {
+            middle[i].prev = middle[i - 1];
+        }
+        _.last(middle).next = last;
+        last.prev = _.last(middle);
+        _.first(middle).prev = first;
+        first.next = _.first(middle);    
+    } else {
+        first.next = last;
+        last.prev = first;
     }
-    for (var i = i; i < middle.length; ++i) {
-        middle[i].prev = middle[i - 1];
-    }
-    _.last(middle).next = last;
-    last.prev = _.last(middle);
-    _.first(middle).prev = first;
-    first.next = _.first(middle);    
 }
 
 var injectNodesAfter = function (node, nodes) {
@@ -50,21 +55,23 @@ var amdCommonJsWrapper = function (src) {
 
             // remove the array of dependencies as the first argument
             dependencyArgument.startToken.prev.next = callbackArgument.startToken;
-            // remove the callback arguments
-            var first = _.first(callbackArgument.params);
-            var last = _.last(callbackArgument.params);
 
-            // update the callback arguments to [require, exports, module]
-            var argNodes = [
-                { type: 'Identifier', value: 'require' },
-                { type: 'Punctuator', value: ',' },
-                { type: 'WhiteSpace', value: ' ' },
-                { type: 'Identifier', value: 'exports' },
-                { type: 'Punctuator', value: ',' },
-                { type: 'WhiteSpace', value: ' ' },
-                { type: 'Identifier', value: 'module' }
-            ];
-            injectNodes(first.startToken.prev, argNodes, last.endToken.next);
+            if (callbackArgument.params.length) {
+                var first = _.first(callbackArgument.params);
+                var last = _.last(callbackArgument.params);
+
+                // replace the callback arguments with [require, exports, module]
+                var argNodes = [
+                    { type: 'Identifier', value: 'require' },
+                    { type: 'Punctuator', value: ',' },
+                    { type: 'WhiteSpace', value: ' ' },
+                    { type: 'Identifier', value: 'exports' },
+                    { type: 'Punctuator', value: ',' },
+                    { type: 'WhiteSpace', value: ' ' },
+                    { type: 'Identifier', value: 'module' }
+                ];
+                injectNodes(first.startToken.prev, argNodes, last.endToken.next);
+            }
 
             // add `var name = require('dep')` for each dependency
             var functionBlock = callbackArgument.body;
