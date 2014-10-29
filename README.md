@@ -61,7 +61,7 @@ define('modulename', function (require, exports, module) {
 });
 ```
 
-#####leaves commonjs wrapper modules along
+#####leaves commonjs wrapper modules alone
 >
 ```js
 define('modulename', function (require, exports, module) {
