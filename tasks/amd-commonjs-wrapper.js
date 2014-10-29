@@ -4,6 +4,7 @@ var assert = require('assert');
 var eachAsync = require('each-async');
 var _ = require('lodash');
 var rocambole = require('rocambole');
+var grunt = require('grunt');
 
 // inject nodes between two not-necessarily-consecutive nodes
 // WARNING: any nodes between first and last will be removed
@@ -34,15 +35,32 @@ var injectNodesAfter = function (node, nodes) {
 var amdCommonJsWrapper = function (src) {
     return rocambole.moonwalk(src, function (node) {
         if (node.type === 'CallExpression' && node.callee.name === 'define') {
-            var isNamedModule = node.arguments[0].type !== 'ArrayExpression';
-            var dependencyArgument = node.arguments[isNamedModule ? 1 : 0];
-            var callbackArgument = node.arguments[isNamedModule ? 2 : 1];
+            var nameArgument = node.arguments[0];
+            var dependencyArgument = node.arguments[1];
+            var callbackArgument = node.arguments[2];
+
+            // the name is optional, so adjust args if necesary
+            if (nameArgument.type !== 'Literal') {
+                callbackArgument = dependencyArgument;
+                dependencyArgument = nameArgument;
+                nameArgument = void 0;
+            }
+
+            // the dependency array is optional as well
+            if (dependencyArgument.type !== 'ArrayExpression') {
+                callbackArgument = dependencyArgument;
+                dependencyArgument = void 0;
+            }
+
+            if (!dependencyArgument) {
+                grunt.log.writeln('Module is already a commonjs wrapper. Skipping this module.')
+                return;
+            }
 
             // we only know what to do if the first argument is an array of args, and the second is the callback
             assert(dependencyArgument.type === 'ArrayExpression', 'expected an array of dependencies');
             if (callbackArgument.type === 'Identifier') {
-                var grunt = require('grunt');
-                grunt.log.warn('Unsafe to rewrite a potentionally re-usable functions. Skipping this module definition.');
+                grunt.log.warn('Unsafe to rewrite a potentionally re-usable functions. Skipping this module.');
                 return;
             }
             assert(callbackArgument.type === 'FunctionExpression', 'expected a function callback that receives the dependencies, not ' + callbackArgument.type);

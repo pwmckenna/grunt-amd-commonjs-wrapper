@@ -49,3 +49,9 @@ it('should not change modules that are already in commonjs wrapper format', func
     var expected = grunt.file.read('fixtures/after/commonjs-wrapper.js');
     assert.equal(converted, expected);
 });
+
+it('should not change named modules that are already in commonjs wrapper format', function () {
+    var converted = grunt.file.read('fixtures/tmp/named-commonjs-wrapper.js');
+    var expected = grunt.file.read('fixtures/after/named-commonjs-wrapper.js');
+    assert.equal(converted, expected);
+});
