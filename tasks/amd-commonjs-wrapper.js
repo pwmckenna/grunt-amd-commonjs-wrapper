@@ -40,7 +40,12 @@ var amdCommonJsWrapper = function (src) {
 
             // we only know what to do if the first argument is an array of args, and the second is the callback
             assert(dependencyArgument.type === 'ArrayExpression', 'expected an array of dependencies');
-            assert(callbackArgument.type === 'FunctionExpression', 'expected a function callback that receives the depdencies');
+            if (callbackArgument.type === 'Identifier') {
+                var grunt = require('grunt');
+                grunt.log.warn('Unsafe to rewrite a potentionally re-usable functions. Skipping this module definition.');
+                return;
+            }
+            assert(callbackArgument.type === 'FunctionExpression', 'expected a function callback that receives the dependencies, not ' + callbackArgument.type);
 
             // get the list of deps [string]
             var dependencyNames = [];
