@@ -86,8 +86,8 @@ var amdCommonJsWrapper = function (src) {
                 current = current.next;
             }
             assert(dependencyNames.length >= dependencyVariableNames.length, 'not enough dependencies to fill all the variables');
-            for (var i = dependencyNames.length - 1; i >= 0 ; --i) {                
-                injectNodes(functionBlock.startToken, _.map(whitespaceNodes, _.clone), functionBlock.startToken.next);
+            for (var i = dependencyNames.length - 1; i >= 0 ; --i) {
+                injectNodes(current, _.map(whitespaceNodes, _.clone), current.next);
                 var declarationNodes = (dependencyVariableNames.length <= i ? [] :
                     [
                         { type: 'Keyword', value: 'var' },
@@ -104,9 +104,8 @@ var amdCommonJsWrapper = function (src) {
                     { type: 'Punctuator', value: ')' },
                     { type: 'Punctuator', value: ';' }
                 ]);
-                injectNodes(functionBlock.startToken, declarationNodes, functionBlock.startToken.next);
+                injectNodes(current, declarationNodes, current.next);
             }
-            injectNodes(functionBlock.startToken, _.map(whitespaceNodes, _.clone), functionBlock.startToken.next);
         }
     });
     return src;
