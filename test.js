@@ -31,3 +31,9 @@ it('should support modules with named callback', function () {
     var expected = grunt.file.read('fixtures/after/named-cb.js');
     assert.equal(converted, expected);
 });
+
+it('should support \'use strict\'', function () {
+    var converted = grunt.file.read('fixtures/tmp/use-strict.js');
+    var expected = grunt.file.read('fixtures/after/use-strict.js');
+    assert.equal(converted, expected);
+});
