@@ -25,3 +25,9 @@ it('should support modules with no dependencies', function () {
     var expected = grunt.file.read('fixtures/after/no-deps.js');
     assert.equal(converted, expected);
 });
+
+it('should support modules with named callback', function () {
+    var converted = grunt.file.read('fixtures/tmp/named-cb.js');
+    var expected = grunt.file.read('fixtures/after/named-cb.js');
+    assert.equal(converted, expected);
+});
