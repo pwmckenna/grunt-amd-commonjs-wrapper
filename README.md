@@ -1,4 +1,4 @@
-grunt-amd-to-commonjs
+grunt-amd-commonjs-wrapper
 =====================
 
 Convert a normal amd module to the simplified commonjs style amd module
