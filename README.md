@@ -3,7 +3,7 @@ grunt-amd-commonjs-wrapper
 
 Convert a normal amd module to the simplified commonjs style amd module
 
-#### Examples
+### Examples
 >
 ```js
 define(['dep1', 'dep2'], function (var1, var2) {
@@ -19,7 +19,7 @@ define(function (require, exports, module) {
 });
 ```
 
-supports variable-less dependencies
+#####supports variable-less dependencies
 >
 ```js
 define(['dep1', 'dep2'], function () {
@@ -33,7 +33,7 @@ define(function (require, exports, module) {
 });
 ```
 
-supports named modules
+#####supports named modules
 >
 ```js
 define('modulename', ['dep'], function () {
@@ -46,7 +46,7 @@ define('modulename', function (require, exports, module) {
 });
 ```
 
-supports 'use strict'
+#####supports 'use strict'
 >
 ```js
 define('modulename', ['dep'], function () {
@@ -58,6 +58,20 @@ becomes
 define('modulename', function (require, exports, module) {
     'use strict';
     require('dep');
+});
+```
+
+#####leaves commonjs wrapper modules along
+>
+```js
+define('modulename', function (require, exports, module) {
+    'use strict';
+});
+```
+remains
+```js
+define('modulename', function (require, exports, module) {
+    'use strict';
 });
 ```
 
