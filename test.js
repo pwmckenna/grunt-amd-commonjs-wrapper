@@ -43,3 +43,9 @@ it('should support \'use strict\' with trailing ;', function () {
     var expected = grunt.file.read('fixtures/after/use-strict-semicolon.js');
     assert.equal(converted, expected);
 });
+
+it('should not change modules that are already in commonjs wrapper format', function () {
+    var converted = grunt.file.read('fixtures/tmp/commonjs-wrapper.js');
+    var expected = grunt.file.read('fixtures/after/commonjs-wrapper.js');
+    assert.equal(converted, expected);
+});
