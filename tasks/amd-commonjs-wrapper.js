@@ -74,21 +74,26 @@ var amdCommonJsWrapper = function (src) {
                 whitespaceNodes.push(_.pick(current.next, 'type', 'value'));
                 current = current.next;
             }
+            assert(dependencyNames.length >= dependencyVariableNames.length, 'not enough dependencies to fill all the variables');
             for (var i = dependencyNames.length - 1; i >= 0 ; --i) {                
                 injectNodes(functionBlock.startToken, _.map(whitespaceNodes, _.clone), functionBlock.startToken.next);
-                injectNodes(functionBlock.startToken, [
-                    { type: 'Keyword', value: 'var' },
-                    { type: 'WhiteSpace', value: ' '},
-                    { type: 'Identifier', value: dependencyVariableNames[i] },
-                    { type: 'WhiteSpace', value: ' ' },
-                    { type: 'Punctuator', value: '=' },
-                    { type: 'WhiteSpace', value: ' ' },
+                var declarationNodes = (dependencyVariableNames.length <= i ? [] :
+                    [
+                        { type: 'Keyword', value: 'var' },
+                        { type: 'WhiteSpace', value: ' '},
+                        { type: 'Identifier', value: dependencyVariableNames[i] },
+                        { type: 'WhiteSpace', value: ' ' },
+                        { type: 'Punctuator', value: '=' },
+                        { type: 'WhiteSpace', value: ' ' }
+                    ]
+                ).concat([
                     { type: 'Identifier', value: 'require' },
                     { type: 'Punctuator', value: '(' },
                     { type: 'String', value: dependencyNames[i] },
                     { type: 'Punctuator', value: ')' },
                     { type: 'Punctuator', value: ';' }
-                ], functionBlock.startToken.next);
+                ]);
+                injectNodes(functionBlock.startToken, declarationNodes, functionBlock.startToken.next);
             }
             injectNodes(functionBlock.startToken, _.map(whitespaceNodes, _.clone), functionBlock.startToken.next);
         }

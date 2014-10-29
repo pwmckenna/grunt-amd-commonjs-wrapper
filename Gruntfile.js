@@ -4,7 +4,8 @@ module.exports = function (grunt) {
         'amd-commonjs-wrapper': {
             test: {
                 files: {
-                    'fixtures/tmp/fixture-after.js': 'fixtures/fixture-before.js'
+                    'fixtures/tmp/1-after.js': 'fixtures/1-before.js',
+                    'fixtures/tmp/2-after.js': 'fixtures/2-before.js'
                 }
             }
         },
@@ -14,7 +15,7 @@ module.exports = function (grunt) {
             }
         },
         clean: {
-            test: ['tmp']
+            test: ['fixtures/tmp']
         }
     });
 
