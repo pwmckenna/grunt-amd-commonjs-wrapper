@@ -19,8 +19,7 @@ define(function (require, exports, module) {
 });
 ```
 
-
-supports variable-less dependencies as well!
+supports variable-less dependencies
 >
 ```js
 define(['dep1', 'dep2'], function () {
@@ -31,6 +30,34 @@ becomes
 define(function (require, exports, module) {
     require('dep1');
     require('dep2');
+});
+```
+
+supports named modules
+>
+```js
+define('modulename', ['dep'], function () {
+});
+```
+becomes
+```js
+define('modulename', function (require, exports, module) {
+    require('dep');
+});
+```
+
+supports 'use strict'
+>
+```js
+define('modulename', ['dep'], function () {
+    'use strict';
+});
+```
+becomes
+```js
+define('modulename', function (require, exports, module) {
+    'use strict';
+    require('dep');
 });
 ```
 
