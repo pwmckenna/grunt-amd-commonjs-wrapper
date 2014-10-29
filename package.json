@@ -1,6 +1,6 @@
 {
   "name": "grunt-amd-commonjs-wrapper",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Convert AMD Modules with declared dependencies into the Simplified CommonJS Wrapper style",
   "license": "MIT",
   "repository": "pwmckenna/grunt-amd-commonjs-wrapper",
