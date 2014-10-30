@@ -12,7 +12,7 @@ require(['dep1', 'dep2', 'dep3'], function (dep1, dep2, dep3) {
 });
 ```
 
-### When to use
+### When to use?
 This is the opposite of most grunt tasks that you'd use as part of your build, in that it (hopefully) makes your code more readable and easy to lint. This means that you're only likely to use it a single time to convert the style of a huge project.
 
 In addition, some people prefer writing their modules in the commonjs style (especially if you want to run your code in node as well). Once you've used this task to convert your modules, you could even just strip off the outer define call and re-add it at build time with something like [grunt-amd-wrap](https://www.npmjs.org/package/grunt-amd-wrap).
